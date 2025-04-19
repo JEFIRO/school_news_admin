@@ -1,62 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:school_news/Models/MemberModel.dart';
+import '../service/MemberService.dart';
 
-void showOptions(BuildContext context) {
-  showModalBottomSheet(
+Future<MemberModel?> showOptions(BuildContext context, String memberId) async {
+  return await showModalBottomSheet<MemberModel>(
     context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    backgroundColor: Colors.white,
-    builder: (BuildContext context) {
-      return const _OptionsContent();
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (context) {
+      return Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Wrap(
+          children: [
+            const Center(
+              child: Text(
+                'Escolha a nova função',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Estudante'),
+              onTap: () async {
+                final member = await changePermission(memberId, "student");
+                Navigator.pop(context, member);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: const Text('Editor'),
+              onTap: () async {
+                final member = await changePermission(memberId, "editor");
+                Navigator.pop(context, member);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Administrador'),
+              onTap: () async {
+                final member = await changePermission(memberId, "admin");
+                Navigator.pop(context, member);
+              },
+            ),
+          ],
+        ),
+      );
     },
   );
-}
-
-class _OptionsContent extends StatelessWidget {
-  const _OptionsContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.admin_panel_settings, color: Colors.black87),
-            title: const Text('Admim'),
-            onTap: () {
-              Navigator.pop(context);
-              print('Função alterada!');
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.mode_edit_outline_rounded, color: Colors.black87),
-            title: const Text('Editor in chief'),
-            onTap: () {
-              Navigator.pop(context);
-              print('Usuário bloqueado!');
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.edit, color: Colors.black87),
-            title: const Text('Editor'),
-            onTap: () {
-              Navigator.pop(context);
-              print('Membro restrito!');
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.person, color: Colors.black87),
-            title: const Text('Student'),
-            onTap: () {
-              Navigator.pop(context);
-              print('Visualizar perfil!');
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:school_news/Models/AuthModel.dart';
 
 import '../service/LoginSchoolService.dart';
-import 'SchoolHomeAdmPage.dart';
+import 'HomeAdmPage.dart';
 
 class Loginschool extends StatelessWidget {
   Loginschool({super.key});
 
   final _formKey = GlobalKey<FormState>();
-
 
   final TextEditingController schoolNameController = TextEditingController();
   final TextEditingController schoolEmailController = TextEditingController();
@@ -48,96 +47,121 @@ class Loginschool extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                controller: schoolNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name of School',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Endereço da escola é obrigatório';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                controller: schoolEmailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Endereço da escola é obrigatório';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                controller: schoolPassWordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Endereço da escola é obrigatório';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            SizedBox(height: 5),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFFC2185B),
-                  ),
-                  onPressed: () async {
-
-                    if (_formKey.currentState!.validate()) {
-                      final login = AuthModel(
-                        name: schoolNameController.text,
-                        email: schoolEmailController.text,
-                        passWord: schoolEmailController.text,
-
-                      );
-
-                      var response = await loginPage(login);
-                      print(response);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SchoolHomeAdmPage(),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(
-                    "Login",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black,
+            // Aqui começa o Form
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    child: TextFormField(
+                      controller: schoolNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Name of School',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Endereço da escola é obrigatório';
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    child: TextFormField(
+                      controller: schoolEmailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email da escola é obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    child: TextFormField(
+                      controller: schoolPassWordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Senha da escola é obrigatória';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+                    child: SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFFC2185B),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            final login = AuthModel(
+                              name: schoolNameController.text,
+                              email: schoolEmailController.text,
+                              passWord:
+                                  schoolPassWordController
+                                      .text, // Corrigido aqui
+                            );
+
+                            var response = await loginPage(login);
+
+                            print(response);
+
+                            if (response != null && response != 'erro') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeAdmPage(),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+            // Fora do Form
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: SizedBox(

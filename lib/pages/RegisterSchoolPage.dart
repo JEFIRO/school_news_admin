@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import '../Models/MemberModelDTO.dart';
 import '../Models/SchoolNewsDTO.dart';
 import '../service/NewSchoolService.dart';
-import 'SchoolHomeAdmPage.dart';
+import 'LoginSchool.dart';
 
-class SchoolSetupPage extends StatefulWidget {
-  const SchoolSetupPage({super.key});
+class RegisterSchoolPage extends StatefulWidget {
+  const RegisterSchoolPage({super.key});
 
   @override
-  State<SchoolSetupPage> createState() => _SchoolSetupPageState();
+  State<RegisterSchoolPage> createState() => _RegisterSchoolPageState();
 }
 
-class _SchoolSetupPageState extends State<SchoolSetupPage> {
+class _RegisterSchoolPageState extends State<RegisterSchoolPage> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController schoolNameController = TextEditingController();
@@ -186,9 +186,7 @@ class _SchoolSetupPageState extends State<SchoolSetupPage> {
                     if (response != null && response != 'erro') {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => SchoolHomeAdmPage(),
-                        ),
+                        MaterialPageRoute(builder: (context) => Loginschool()),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

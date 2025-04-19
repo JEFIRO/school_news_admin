@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:school_news/Models/MemberModel.dart';
 
 import '../service/MemberService.dart';
-import '../widgets/MembersWidget.dart';
+import '../widgets/MemberCard.dart';
 
-class SchoolHomeAdmPage extends StatefulWidget {
-  SchoolHomeAdmPage({super.key});
+class HomeAdmPage extends StatefulWidget {
+  const HomeAdmPage({super.key});
 
   @override
-  State<SchoolHomeAdmPage> createState() => _SchoolHomeAdmPageState();
+  State<HomeAdmPage> createState() => _HomeAdmPageState();
 }
 
-class _SchoolHomeAdmPageState extends State<SchoolHomeAdmPage> {
+class _HomeAdmPageState extends State<HomeAdmPage> {
   int currentPageIndex = 0;
 
-  List<MemberMode>? members;
+  List<MemberModel>? members;
 
   @override
   void initState() {
@@ -51,30 +51,30 @@ class _SchoolHomeAdmPageState extends State<SchoolHomeAdmPage> {
         ],
       ),
 
-      body:
-          <Widget>[
-            Card(
-              shadowColor: Colors.transparent,
-              margin: const EdgeInsets.all(8.0),
-              child: SizedBox.expand(
-                child: Center(
-                  child: Flexible(
-                    child: ListView(
-                      children: [
-                        for (MemberMode membe in members!)
-                          MemberCard(
-                            imageUrl: 'https://i.pravatar.cc/150?img=8',
-                            name: membe.name,
-                            role: membe.role,
-                            email: membe.role,
-                          ),
-                      ],
+      body: <Widget>[
+        members == null
+            ? const Center(child: CircularProgressIndicator())
+            : members!.isEmpty
+            ? const Center(child: Text("Nenhum membro encontrado."))
+            : Card(
+          shadowColor: Colors.transparent,
+          margin: const EdgeInsets.all(8.0),
+          child: SizedBox.expand(
+            child: Center(
+              child: ListView(
+                children: [
+                  for (MemberModel member in members!)
+                    MemberCard(member: member,
+                      onUpdate: atualizarMembro,
+
                     ),
-                  ),
-                ),
+                ],
               ),
             ),
-          ][currentPageIndex],
+          ),
+        ),
+      ][currentPageIndex],
+
     );
   }
 
@@ -82,9 +82,9 @@ class _SchoolHomeAdmPageState extends State<SchoolHomeAdmPage> {
     try {
       var data = await findMember();
       setState(() {
-        members = data as List<MemberMode>;
+        members = data;
       });
-    } catch (e) {
+        } catch (e) {
       print("Erro ao carregar membros: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -94,4 +94,14 @@ class _SchoolHomeAdmPageState extends State<SchoolHomeAdmPage> {
       );
     }
   }
+
+  void atualizarMembro(MemberModel atualizado) {
+    final index = members!.indexWhere((m) => m.id == atualizado.id);
+    if (index != -1) {
+      setState(() {
+        members![index] = atualizado;
+      });
+    }
+  }
+
 }

@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../Models/MemberModel.dart';
+import '../pages/AdminViewUserProfile.dart';
+import '../service/MemberService.dart';
 import 'ShowOptions.dart';
 
 enum SampleItem { itemOne, itemTwo, itemThree, itemFuor }
 
 class MemberCard extends StatefulWidget {
-  final String imageUrl;
-  final String name;
-  final String role;
-  final String email;
+  final MemberModel member;
+  final Function(MemberModel) onUpdate;
 
-  const MemberCard({
-    super.key,
-    required this.imageUrl,
-    required this.name,
-    required this.role,
-    required this.email,
-  });
+  const MemberCard({super.key, required this.member, required this.onUpdate});
 
   @override
   State<MemberCard> createState() => _MemberCardState();
@@ -39,7 +34,9 @@ class _MemberCardState extends State<MemberCard> {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
-                widget.imageUrl,
+                widget.member.image?.isNotEmpty == true
+                    ? widget.member.image!
+                    : 'https://www.example.com/imagem_padrao.png',
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
@@ -54,7 +51,7 @@ class _MemberCardState extends State<MemberCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.name,
+                    widget.member.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -62,7 +59,7 @@ class _MemberCardState extends State<MemberCard> {
                     ),
                   ),
                   Text(
-                    widget.role,
+                    widget.member.role,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color(0xFF757575),
@@ -70,7 +67,7 @@ class _MemberCardState extends State<MemberCard> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    widget.email,
+                    widget.member.email,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color(0xFF616161),
@@ -81,19 +78,35 @@ class _MemberCardState extends State<MemberCard> {
             ),
             PopupMenuButton(
               initialValue: selectedItem,
-              onSelected: (SampleItem item) {
+              onSelected: (SampleItem item) async {
                 switch (item) {
                   case SampleItem.itemOne:
-                    showOptions(context);
+                    final member = await showOptions(context, widget.member.id);
+                    if (member != null) {
+                      widget.onUpdate(member);
+                    }
                     break;
                   case SampleItem.itemTwo:
-                    print('Usuário bloqueado!');
+                    final blockAcount = await blockAccount(widget.member.id);
+                    if(blockAcount != null){
+                      widget.onUpdate(blockAcount);
+                    }
                     break;
                   case SampleItem.itemThree:
                     print('Membro restrito!');
                     break;
                   case SampleItem.itemFuor:
-                    print('view profile!');
+                    final updatedMember = await Navigator.push<MemberModel?>(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                AdminViewUserProfile(member: widget.member),
+                      ),
+                    );
+                    if (updatedMember != null) {
+                      widget.onUpdate(updatedMember);
+                    }
                     break;
                 }
               },

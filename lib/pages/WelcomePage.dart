@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'SelectOptionLogin.dart';
+import 'LoginOrRegisterPage.dart';
 
-class Newshcoolpage extends StatelessWidget {
-  const Newshcoolpage({super.key});
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class Newshcoolpage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Selectoptionlogin(),
+                      builder: (context) => const LoginOrRegisterPage(),
                     ),
                   );
                 },

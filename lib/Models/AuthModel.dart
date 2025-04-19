@@ -6,6 +6,6 @@ class AuthModel {
   AuthModel({required this.name, required this.email, required this.passWord});
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'email': email, 'passWord': passWord};
+    return {'schoolName': name, 'email': email, 'passWord': passWord};
   }
 }
